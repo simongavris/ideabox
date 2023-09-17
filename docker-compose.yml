@@ -1,0 +1,20 @@
+version: '3'
+networks:
+  proxy:
+    external: true
+
+services:
+  frontend:
+    build: ./frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy" # Assuming Traefik runs on the "proxy" network
+      - "traefik.http.routers.ideabox.rule=Host(`yourdomain.com`)" # Replace with your domain
+      - "traefik.http.routers.ideabox.entrypoints=websecure"
+      - "traefik.http.routers.ideabox.tls.certresolver=defaultresolver"
+    networks:
+      - proxy
+
+  backend:
+    build: ./backend
+    stop_signal: SIGINT

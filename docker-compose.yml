@@ -8,8 +8,6 @@ networks:
 services:
   frontend:
     build: ./frontend
-    ports:
-      - 8080:80
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy" # Assuming Traefik runs on the "proxy" network

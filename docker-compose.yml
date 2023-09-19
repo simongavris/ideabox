@@ -17,9 +17,11 @@ services:
     networks:
       - proxy
       - internal
+    restart: on-failure
 
   backend:
     build: ./backend
     stop_signal: SIGINT
     networks:
       - internal
+    restart: on-failure    

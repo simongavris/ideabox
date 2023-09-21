@@ -2,12 +2,13 @@ from flask import Flask, request, jsonify, g
 from pymongo import MongoClient
 import os
 import logging
+import sys
 
 # Initialize Flask app
 app = Flask(__name__)
 
 # Logging configuration
-logging.basicConfig(filename='app.log', level=logging.INFO, 
+logging.basicConfig(stream=sys.stdout, level=logging.INFO, 
                     format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 # Load configurations from environment variables
@@ -44,6 +45,16 @@ def submit_idea():
     except Exception as e:
         logging.error("An error occurred: %s", e)
         return jsonify({"status": "error", "message": "An error occurred"}), 500
+
+@app.errorhandler(500)
+def internal_error(error):
+    logging.error('Server Error: %s', error)
+    return "Internal server error", 500
+
+@app.errorhandler(Exception)
+def unhandled_exception(e):
+    logging.error('Unhandled Exception: %s', e)
+    return "Internal server error", 500
 
 if __name__ == '__main__':
     app.run(debug=DEBUG)

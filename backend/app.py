@@ -3,6 +3,7 @@ from pymongo import MongoClient
 import os
 import logging
 import sys
+from datetime import datetime  # import datetime
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -36,7 +37,11 @@ def submit_idea():
         if not idea:
             return jsonify({"status": "error", "message": "Invalid idea"}), 400
 
-        g.db.ideas.insert_one({"idea": idea})
+        # Get the current timestamp
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # Insert the idea along with the timestamp
+        g.db.ideas.insert_one({"idea": idea, "timestamp": timestamp})
         
         logging.info("Idea successfully submitted.")
 

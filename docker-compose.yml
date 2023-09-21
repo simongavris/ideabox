@@ -4,6 +4,8 @@ networks:
     external: true
   internal:
     external: false
+  mongodb_network:
+    external: true
 
 services:
   frontend:
@@ -17,11 +19,14 @@ services:
     networks:
       - proxy
       - internal
-    restart: on-failure
+    restart: unless-stopped
 
   backend:
     build: ./backend
+    environment:
+      - MONGO_URI=mongodb://username:password@mongo:27017/db_name  # Replace with actual credentials and MongoDB service name
     stop_signal: SIGINT
     networks:
       - internal
-    restart: on-failure    
+      - mongodb_network  # Adding the MongoDB external network here
+    restart: unless-stopped
